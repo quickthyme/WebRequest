@@ -1,16 +1,16 @@
 
 import Foundation
 
-class JSONWebRequestDelivery : HTTPWebRequestDelivery {
+open class JSONWebRequestDelivery : HTTPWebRequestDelivery {
     
-    override func getHeaders(request: WebRequest) -> [String:String]? {
+    open override func getHeaders(request: WebRequest) -> [String:String]? {
         var headers : [String:String] = request.headers ?? [:]
         headers["Content-Type"] = "application/json"
         headers["Accept"] = "application/json"
         return headers
     }
     
-    override func getBodyData(request: WebRequest) -> Data? {
+    open override func getBodyData(request: WebRequest) -> Data? {
         if let explicitData = request.bodyData { return explicitData }
         guard let bodyParameters = request.bodyParameters,
             (JSONSerialization.isValidJSONObject(bodyParameters)),

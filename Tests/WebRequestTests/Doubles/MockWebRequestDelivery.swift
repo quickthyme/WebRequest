@@ -1,7 +1,7 @@
 
 import Foundation
 import XCTest
-@testable import WebRequest
+import WebRequest
 
 class MockWebRequestDelivery : WebRequestDelivery {
     
@@ -13,7 +13,7 @@ class MockWebRequestDelivery : WebRequestDelivery {
 
         let url : URL
         
-        if let urlString = request.urlString {
+        if let urlString = request.endpoint.urlString {
             let turl = URL(string: urlString)
             XCTAssertNotNil(turl)
             url = turl!

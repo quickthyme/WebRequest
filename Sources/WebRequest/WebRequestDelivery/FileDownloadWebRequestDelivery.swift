@@ -1,37 +1,33 @@
 
 import Foundation
 
-class FileDownloadWebRequestDelivery : HTTPWebRequestDelivery {
+open class FileDownloadWebRequestDelivery : HTTPWebRequestDelivery, URLSessionDownloadDelegate {
     
-    var targetURL : URL
-    var webRequest : WebRequest?
+    open var targetURL : URL
+    open var webRequest : WebRequest?
     
-    required init(targetURL: URL) {
+    public required init(targetURL: URL) {
         self.targetURL = targetURL
         super.init()
     }
     
-    convenience init(targetPath: String) {
+    public convenience init(targetPath: String) {
         self.init(targetURL: URL(fileURLWithPath: targetPath))
     }
     
-    override func getURLSession(configuration: URLSessionConfiguration) -> URLSession {
+    open override func getURLSession(configuration: URLSessionConfiguration) -> URLSession {
         let session = URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
         return session
     }
     
-    override func executeDelivery(request: WebRequest, urlSession: URLSession, urlRequest: URLRequest) {
+    open override func executeDelivery(request: WebRequest, urlSession: URLSession, urlRequest: URLRequest) {
         self.webRequest = request
         let task = urlSession.downloadTask(with: urlRequest)
         task.resume()
         urlSession.finishTasksAndInvalidate()
     }
     
-}
-
-extension FileDownloadWebRequestDelivery : URLSessionDownloadDelegate {
-    
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+    open func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         let downloadURL = location
         
         if FileManager.default.fileExists(atPath: downloadURL.path) {
@@ -47,7 +43,7 @@ extension FileDownloadWebRequestDelivery : URLSessionDownloadDelegate {
         self.webRequest = nil
     }
     
-    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+    open func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
         if let error = error { print("\(#function) - \(error)") }
         self.webRequest = nil
     }

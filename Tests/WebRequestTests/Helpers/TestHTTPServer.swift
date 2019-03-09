@@ -23,7 +23,7 @@ class TestHTTPServer: NSObject {
         let sock_stream = SOCK_STREAM
         let INADDR_ANY = in_addr_t(0)
 
-        let sock = socket(AF_INET, Int32(sock_stream), 0)
+        let sock = Darwin.socket(AF_INET, Int32(sock_stream), 0)
         guard (sock >= 0) else {
             return print("Could not create server socket.")
         }
@@ -44,7 +44,7 @@ class TestHTTPServer: NSObject {
 
         let _ = withUnsafeMutablePointer(to: &serveraddr) {
             $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
-                bind(sock, $0, socklen_t(socklen))
+                Darwin.bind(sock, $0, socklen_t(socklen))
             }
         }
 
@@ -74,7 +74,7 @@ class TestHTTPServer: NSObject {
 
             self.rawPrint(clientSocket, payload)
 
-            close(clientSocket)
+            Darwin.close(clientSocket)
         })
         self.serverSocket = sock
         self.timer = timer
@@ -82,7 +82,7 @@ class TestHTTPServer: NSObject {
     }
 
     func stop() {
-        close(serverSocket)
+        Darwin.close(serverSocket)
         timer?.cancel()
         timer = nil
         print("<<<< Stopped listening on port \(portNumber)")

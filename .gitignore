@@ -1,8 +1,10 @@
+.DS_Store
+/.build
+/Packages
 *.hmap
 *.dSYM
 *.dSYM.zip
 *.ipa
-.DS_Store
 *.pbxuser
 *.perspective
 *.perspectivev3

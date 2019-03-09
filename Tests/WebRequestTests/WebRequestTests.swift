@@ -1,6 +1,6 @@
 
 import XCTest
-@testable import WebRequest
+import WebRequest
 
 class WebRequestTests: XCTestCase {
 

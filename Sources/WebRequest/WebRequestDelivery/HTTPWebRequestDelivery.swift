@@ -1,9 +1,9 @@
 
 import Foundation
 
-class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
+open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
 
-    func deliver(request:WebRequest) {
+    open func deliver(request:WebRequest) {
 
         guard let url = self.constructURL(request: request) else {
             self.send(completion: request.completion, request: request, errorCode: .MalformedURL)
@@ -32,9 +32,9 @@ class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
         self.executeDelivery(request: request, urlSession: urlSession, urlRequest: urlRequest)
     }
 
-    func constructURL(request: WebRequest) -> URL? {
+    open func constructURL(request: WebRequest) -> URL? {
 
-        if let urlString = request.urlString,
+        if let urlString = request.endpoint.urlString,
             let url = URL(string: urlString) {
             return url
         }
@@ -66,24 +66,24 @@ class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
         return urlComponents.url
     }
 
-    func getURLSessionConfiguration() -> URLSessionConfiguration {
+    open func getURLSessionConfiguration() -> URLSessionConfiguration {
         return URLSessionConfiguration.default
     }
 
-    func getURLSession(configuration: URLSessionConfiguration) -> URLSession {
+    open func getURLSession(configuration: URLSessionConfiguration) -> URLSession {
         return URLSession(configuration: configuration)
     }
 
-    func getURLRequest(url:URL) -> URLRequest {
+    open func getURLRequest(url:URL) -> URLRequest {
         return URLRequest(url: url, cachePolicy: .reloadIgnoringCacheData, timeoutInterval: 15.0)
     }
 
 
-    func getHeaders(request: WebRequest) -> [String:String]? {
+    open func getHeaders(request: WebRequest) -> [String:String]? {
         return request.headers
     }
 
-    func getBodyData(request: WebRequest) -> Data? {
+    open func getBodyData(request: WebRequest) -> Data? {
         if let explicitData = request.bodyData { return explicitData }
         guard let bodyParameters = request.bodyParameters else { return nil }
         var dataString : String = ""
@@ -98,7 +98,7 @@ class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
         return (dataString != "") ? dataString.data(using: .utf8) : nil
     }
 
-    func executeDelivery(request: WebRequest, urlSession: URLSession, urlRequest: URLRequest) {
+    open func executeDelivery(request: WebRequest, urlSession: URLSession, urlRequest: URLRequest) {
         // operation task
         let task = urlSession.dataTask(with: urlRequest, completionHandler: {
             [weak self] (data: Data?, response: URLResponse?, error: Error?) in
@@ -117,22 +117,21 @@ class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
         task.resume()
     }
 
-    func send(completion:((WebResult, WebRequest) -> ())?,
-              request: WebRequest,
-              errorCode: WebResult.ErrorCode) {
+    open func send(completion:((WebResult, WebRequest) -> ())?,
+                   request: WebRequest,
+                   errorCode: WebResult.ErrorCode) {
 
         self.send(completion: completion, request: request, status: errorCode.rawValue)
     }
 
-    func send(completion:((WebResult, WebRequest) -> ())?,
-              request: WebRequest,
-              status: Int,
-              headers: [AnyHashable:Any]? = nil,
-              data:Data? = nil) {
+    open func send(completion:((WebResult, WebRequest) -> ())?,
+                   request: WebRequest,
+                   status: Int,
+                   headers: [AnyHashable:Any]? = nil,
+                   data:Data? = nil) {
 
         let headers = headers ?? [:]
         let result = WebResult(status: status, headers: headers, data: data)
         completion?(result, request)
     }
-
 }
