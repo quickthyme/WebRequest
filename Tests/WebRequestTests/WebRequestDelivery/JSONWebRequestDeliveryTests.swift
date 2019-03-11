@@ -17,7 +17,7 @@ class JSONWebRequestDeliveryTests: XCTestCase {
         server.stop()
     }
 
-    func test_can_execute_real_live_json_request_with_passing_result() {
+    func x_test_can_execute_real_live_json_request_with_passing_result() {
         startServer()
         let expectation = self.expectation(description: "RealJSONCompleted")
         let endpoint = MockGETEndpoint()
