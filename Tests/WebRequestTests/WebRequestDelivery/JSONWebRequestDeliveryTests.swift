@@ -34,9 +34,10 @@ class JSONWebRequestDeliveryTests: XCTestCase {
             delivery: delivery,
             completion: { [expectation] result, request in
                 resultStatus = result.status
-                resultObject = (try? JSONSerialization
-                    .jsonObject(with: result.data!, options: JSONSerialization.ReadingOptions.allowFragments)
-                    as? [AnyHashable: Any])!
+                resultObject = (
+                    try? JSONSerialization
+                        .jsonObject(with: result.data!, options: JSONSerialization.ReadingOptions.allowFragments)
+                        as? [AnyHashable: Any])!
                 expectation.fulfill()
             }
         )

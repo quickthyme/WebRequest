@@ -37,7 +37,7 @@ open class FileDownloadWebRequestDelivery : HTTPWebRequestDelivery, URLSessionDo
         
         let request = self.webRequest!
         let response = downloadTask.response as? HTTPURLResponse
-        let status : Int = response?.statusCode ?? WebResult.ErrorCode.MalformedResponse.rawValue
+        let status : Int = response?.statusCode ?? WebRequest.Result.ErrorCode.MalformedResponse.rawValue
         let headers = response?.allHeaderFields ?? [:]
         self.send(completion: request.completion, request: request, status: status, headers: headers)
         self.webRequest = nil

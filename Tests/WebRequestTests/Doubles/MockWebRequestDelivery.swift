@@ -1,15 +1,16 @@
-
 import Foundation
 import XCTest
 import WebRequest
 
 class MockWebRequestDelivery : WebRequestDelivery {
-    
+
     enum TestStatusCode : Int {
         case fail = 0, pass = 1
     }
-    
+
+    var didCall_deliver: Bool = false
     func deliver(request:WebRequest) {
+        didCall_deliver = true
 
         let url : URL
         
@@ -36,8 +37,8 @@ class MockWebRequestDelivery : WebRequestDelivery {
         send(completion: request.completion, request: request, testStatusCode: .pass, data: data)
     }
     
-    private func send(completion:((WebResult, WebRequest) -> ())?, request: WebRequest, testStatusCode: TestStatusCode, data: Data? = nil) {
-        let result = WebResult(status: testStatusCode.rawValue, headers:[:], data: data)
+    private func send(completion:WebRequest.Completion?, request: WebRequest, testStatusCode: TestStatusCode, data: Data? = nil) {
+        let result = WebRequest.Result(status: testStatusCode.rawValue, headers:[:], data: data)
         completion?(result, request)
     }
     

@@ -4,6 +4,10 @@ import WebRequest
 
 class WebRequestTests: XCTestCase {
 
+    override func setUp() {
+        WebRequest.isDisabled = false
+    }
+
     func test_default_web_request_properties_should_be_nil() {
         let request = WebRequest()
         XCTAssertNil(request.headers)
@@ -62,5 +66,24 @@ class WebRequestTests: XCTestCase {
 
         waitForExpectations(timeout: 2.0) { _ in
         }
+    }
+
+    func test_given_test_mode_enabled_when_it_is_executed_then_it_does_not_deliver() {
+        let endpoint = MockPOSTEndpoint()
+        let delivery = MockWebRequestDelivery()
+
+        let subject = WebRequest(
+            endpoint: endpoint,
+            headers: nil,
+            urlParameters: nil,
+            bodyParameters: nil,
+            delivery: delivery,
+            completion: nil
+        )
+
+        WebRequest.isDisabled = true
+        subject.execute()
+
+        XCTAssertFalse(delivery.didCall_deliver)
     }
 }
