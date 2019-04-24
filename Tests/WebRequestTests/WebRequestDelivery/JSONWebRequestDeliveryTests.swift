@@ -26,7 +26,7 @@ class JSONWebRequestDeliveryTests: XCTestCase {
         var resultStatus: Int = -1
         var resultObject: [AnyHashable: Any]?
 
-        let testRequest = WebRequest(
+        let subject = WebRequest(
             endpoint: endpoint,
             headers: nil,
             urlParameters: nil,
@@ -36,13 +36,13 @@ class JSONWebRequestDeliveryTests: XCTestCase {
                 resultStatus = result.status
                 resultObject = (
                     try? JSONSerialization
-                        .jsonObject(with: result.data!, options: JSONSerialization.ReadingOptions.allowFragments)
+                        .jsonObject(with: result.data!, options: .allowFragments)
                         as? [AnyHashable: Any])!
                 expectation.fulfill()
             }
         )
 
-        testRequest.execute()
+        try! subject.execute()
 
         waitForExpectations(timeout: 1.0) { _ in
             self.stopServer()

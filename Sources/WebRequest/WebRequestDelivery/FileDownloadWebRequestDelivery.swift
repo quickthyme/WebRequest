@@ -20,7 +20,7 @@ open class FileDownloadWebRequestDelivery : HTTPWebRequestDelivery, URLSessionDo
         return session
     }
     
-    open override func executeDelivery(request: WebRequest, urlSession: URLSession, urlRequest: URLRequest) {
+    open override func executeDelivery(request: WebRequest, urlSession: URLSession, urlRequest: URLRequest) throws {
         self.webRequest = request
         let task = urlSession.downloadTask(with: urlRequest)
         task.resume()
@@ -39,7 +39,7 @@ open class FileDownloadWebRequestDelivery : HTTPWebRequestDelivery, URLSessionDo
         let response = downloadTask.response as? HTTPURLResponse
         let status : Int = response?.statusCode ?? WebRequest.Result.ErrorCode.MalformedResponse.rawValue
         let headers = response?.allHeaderFields ?? [:]
-        self.send(completion: request.completion, request: request, status: status, headers: headers)
+        try? self.complete(request: request, status: status, headers: headers)
         self.webRequest = nil
     }
     

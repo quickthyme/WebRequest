@@ -1,11 +1,11 @@
 import Foundation
 
 public protocol WebRequestDelivery {
-    func deliver(request:WebRequest)
+    func deliver(request:WebRequest) throws
 }
 
 public struct WebRequest {
-    public typealias Completion = (Result, WebRequest) -> ()
+    public typealias Completion = (Result, WebRequest) throws -> ()
 
     public var endpoint        : WebRequestEndpoint = DefaultEndpoint(.GET, nil)
     public var headers         : [String:String]? = nil
@@ -21,9 +21,9 @@ public struct WebRequest {
 
     public static var isDisabled: Bool = false
 
-    public func execute() {
+    public func execute() throws {
         if !WebRequest.isDisabled {
-            delivery?.deliver(request:self)
+            try delivery?.deliver(request:self)
         }
     }
 
