@@ -104,7 +104,7 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
             [weak self] (data: Data?, response: URLResponse?, error: Error?) in
             let response = response as? HTTPURLResponse
             let status : Int = response?.statusCode
-                ?? WebResult.ErrorCode.MalformedResponse.rawValue
+                ?? WebRequest.Result.ErrorCode.MalformedResponse.rawValue
             let headers = response?.allHeaderFields ?? [:]
             self?.send(completion: request.completion,
                        request: request,
@@ -117,21 +117,21 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
         task.resume()
     }
 
-    open func send(completion:((WebResult, WebRequest) -> ())?,
+    open func send(completion:((WebRequest.Result, WebRequest) -> ())?,
                    request: WebRequest,
-                   errorCode: WebResult.ErrorCode) {
+                   errorCode: WebRequest.Result.ErrorCode) {
 
         self.send(completion: completion, request: request, status: errorCode.rawValue)
     }
 
-    open func send(completion:((WebResult, WebRequest) -> ())?,
+    open func send(completion:WebRequest.Completion?,
                    request: WebRequest,
                    status: Int,
                    headers: [AnyHashable:Any]? = nil,
                    data:Data? = nil) {
 
         let headers = headers ?? [:]
-        let result = WebResult(status: status, headers: headers, data: data)
+        let result = WebRequest.Result(status: status, headers: headers, data: data)
         completion?(result, request)
     }
 }

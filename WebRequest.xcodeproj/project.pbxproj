@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DC0B165D2270BDA9000DA8E8 /* WebRequest+Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0B165C2270BDA9000DA8E8 /* WebRequest+Result.swift */; };
+		DC0B165F2270C43B000DA8E8 /* WebRequestEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0B165E2270C43B000DA8E8 /* WebRequestEndpoint.swift */; };
 		DC8F2B6B2233590200277F70 /* libWebRequest-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC8F2B61223358CD00277F70 /* libWebRequest-iOS.a */; };
 		DC8F2B6C223359CC00277F70 /* WebRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB68C722022EC9E00973778 /* WebRequest.swift */; };
 		DC8F2B6D223359CF00277F70 /* WebRequest+URLEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB68C712022EC9E00973778 /* WebRequest+URLEncoder.swift */; };
@@ -45,6 +47,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DC0B165C2270BDA9000DA8E8 /* WebRequest+Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebRequest+Result.swift"; sourceTree = "<group>"; };
+		DC0B165E2270C43B000DA8E8 /* WebRequestEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRequestEndpoint.swift; sourceTree = "<group>"; };
 		DC8F2B61223358CD00277F70 /* libWebRequest-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libWebRequest-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCB68C532022CCE500973778 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCB68C582022CCE500973778 /* WebRequestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WebRequestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -136,6 +140,8 @@
 			children = (
 				DCB68C532022CCE500973778 /* Info.plist */,
 				DCB68C722022EC9E00973778 /* WebRequest.swift */,
+				DC0B165E2270C43B000DA8E8 /* WebRequestEndpoint.swift */,
+				DC0B165C2270BDA9000DA8E8 /* WebRequest+Result.swift */,
 				DCB68C712022EC9E00973778 /* WebRequest+URLEncoder.swift */,
 				DCB68C6C2022EC9E00973778 /* WebRequestDelivery */,
 			);
@@ -238,11 +244,12 @@
 				TargetAttributes = {
 					DC8F2B60223358CD00277F70 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 					DCB68C572022CCE500973778 = {
 						CreatedOnToolsVersion = 9.2;
-						LastSwiftMigration = 1010;
+						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -253,6 +260,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = DCB68C452022CCE500973778;
 			productRefGroup = DCB68C502022CCE500973778 /* Products */;
@@ -283,7 +291,9 @@
 				DC8F2B6C223359CC00277F70 /* WebRequest.swift in Sources */,
 				DC8F2B6D223359CF00277F70 /* WebRequest+URLEncoder.swift in Sources */,
 				DC8F2B6F223359D400277F70 /* HTTPWebRequestDelivery.swift in Sources */,
+				DC0B165F2270C43B000DA8E8 /* WebRequestEndpoint.swift in Sources */,
 				DC8F2B70223359D400277F70 /* JSONWebRequestDelivery.swift in Sources */,
+				DC0B165D2270BDA9000DA8E8 /* WebRequest+Result.swift in Sources */,
 				DC8F2B71223359D400277F70 /* MultipartFormUploadWebRequestDelivery.swift in Sources */,
 				DC8F2B6E223359D400277F70 /* FileDownloadWebRequestDelivery.swift in Sources */,
 			);
@@ -328,7 +338,7 @@
 				PRODUCT_MODULE_NAME = WebRequest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -347,7 +357,7 @@
 				PRODUCT_MODULE_NAME = WebRequest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -477,7 +487,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vml.WebRequest.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -492,7 +502,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.vml.WebRequest.Tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
