@@ -17,7 +17,25 @@ class JSONWebRequestDeliveryTests: XCTestCase {
         server.stop()
     }
 
-    func x_test_can_execute_real_live_json_request_with_passing_result() {
+    struct DummyError: Error {}
+
+    func test_when_completion_handler_throws_it_rethrows() {
+        let endpoint = DefaultEndpoint.init(.GET, nil)
+        let delivery = JSONWebRequestDelivery()
+
+        let subject = WebRequest(
+            endpoint: endpoint,
+            headers: nil,
+            urlParameters: nil,
+            bodyParameters: nil,
+            delivery: delivery,
+            completion: { _, _ in throw DummyError() }
+        )
+
+        XCTAssertThrowsError(try subject.execute())
+    }
+
+    func test_can_execute_real_live_json_request_with_passing_result() {
         startServer()
         let expectation = self.expectation(description: "RealJSONCompleted")
         let endpoint = MockGETEndpoint()
@@ -26,7 +44,7 @@ class JSONWebRequestDeliveryTests: XCTestCase {
         var resultStatus: Int = -1
         var resultObject: [AnyHashable: Any]?
 
-        let testRequest = WebRequest(
+        let subject = WebRequest(
             endpoint: endpoint,
             headers: nil,
             urlParameters: nil,
@@ -34,17 +52,17 @@ class JSONWebRequestDeliveryTests: XCTestCase {
             delivery: delivery,
             completion: { [expectation] result, request in
                 resultStatus = result.status
-                resultObject = (
-                    try? JSONSerialization
-                        .jsonObject(with: result.data!, options: JSONSerialization.ReadingOptions.allowFragments)
-                        as? [AnyHashable: Any])!
+                resultObject = try? JSONSerialization
+                    .jsonObject(with: result.data ?? Data(),
+                                options: .allowFragments)
+                    as? [AnyHashable: Any]
                 expectation.fulfill()
             }
         )
 
-        testRequest.execute()
+        try! subject.execute()
 
-        waitForExpectations(timeout: 1.0) { _ in
+        waitForExpectations(timeout: 60.0) { _ in
             self.stopServer()
             XCTAssertEqual(resultStatus, 200)
             XCTAssertEqual(resultObject!["title"] as! String, "Awake")

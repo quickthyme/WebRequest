@@ -22,7 +22,7 @@ class WebRequestTests: XCTestCase {
         let endpoint = MockGETEndpoint()
         let delivery = MockWebRequestDelivery()
 
-        let testRequest = WebRequest(
+        let subject = WebRequest(
             endpoint: endpoint,
             headers: nil,
             urlParameters: nil,
@@ -34,7 +34,7 @@ class WebRequestTests: XCTestCase {
             }
         )
 
-        testRequest.execute()
+        try! subject.execute()
 
         waitForExpectations(timeout: 2.0) { _ in
         }
@@ -46,7 +46,7 @@ class WebRequestTests: XCTestCase {
         let delivery = MockWebRequestDelivery()
         let testString = "http://127.0.0.1:8080/translate"
 
-        let testRequest = WebRequest(
+        let subject = WebRequest(
             endpoint: endpoint,
             headers: nil,
             urlParameters: nil,
@@ -62,7 +62,7 @@ class WebRequestTests: XCTestCase {
             }
         )
 
-        testRequest.execute()
+        try! subject.execute()
 
         waitForExpectations(timeout: 2.0) { _ in
         }
@@ -82,7 +82,7 @@ class WebRequestTests: XCTestCase {
         )
 
         WebRequest.isDisabled = true
-        subject.execute()
+        try! subject.execute()
 
         XCTAssertFalse(delivery.didCall_deliver)
     }
