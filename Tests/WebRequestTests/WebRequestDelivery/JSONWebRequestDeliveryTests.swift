@@ -17,7 +17,7 @@ class JSONWebRequestDeliveryTests: XCTestCase {
         server.stop()
     }
 
-    func x_test_can_execute_real_live_json_request_with_passing_result() {
+    func test_can_execute_real_live_json_request_with_passing_result() {
         startServer()
         let expectation = self.expectation(description: "RealJSONCompleted")
         let endpoint = MockGETEndpoint()
@@ -34,17 +34,17 @@ class JSONWebRequestDeliveryTests: XCTestCase {
             delivery: delivery,
             completion: { [expectation] result, request in
                 resultStatus = result.status
-                resultObject = (
-                    try? JSONSerialization
-                        .jsonObject(with: result.data!, options: .allowFragments)
-                        as? [AnyHashable: Any])!
+                resultObject = try? JSONSerialization
+                    .jsonObject(with: result.data ?? Data(),
+                                options: .allowFragments)
+                    as? [AnyHashable: Any]
                 expectation.fulfill()
             }
         )
 
         try! subject.execute()
 
-        waitForExpectations(timeout: 1.0) { _ in
+        waitForExpectations(timeout: 60.0) { _ in
             self.stopServer()
             XCTAssertEqual(resultStatus, 200)
             XCTAssertEqual(resultObject!["title"] as! String, "Awake")

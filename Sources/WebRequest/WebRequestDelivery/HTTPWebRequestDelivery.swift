@@ -108,12 +108,13 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
     open func executeDelivery(request: WebRequest,
                               urlSession: URLSession,
                               urlRequest: URLRequest) throws {
+        let queue = DispatchQueue(label: "\(urlRequest.url?.absoluteString ?? "") queue")
         let group = DispatchGroup()
         var taskData: Data?
         var taskResponse: HTTPURLResponse?
 
-        let _ = {
-            group.enter()
+        group.enter()
+        queue.async {
             let task = urlSession.dataTask(
                 with: urlRequest,
                 completionHandler: ({ (data, response, _) in
@@ -122,7 +123,7 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
                     group.leave()
                 }))
             task.resume()
-        }()
+        }
 
         let timeoutResult = group.wait(timeout: .now() + timeoutInterval)
         guard (timeoutResult != .timedOut) else {
