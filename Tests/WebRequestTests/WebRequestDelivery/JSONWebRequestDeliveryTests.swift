@@ -17,6 +17,24 @@ class JSONWebRequestDeliveryTests: XCTestCase {
         server.stop()
     }
 
+    struct DummyError: Error {}
+
+    func test_when_completion_handler_throws_it_rethrows() {
+        let endpoint = DefaultEndpoint.init(.GET, nil)
+        let delivery = JSONWebRequestDelivery()
+
+        let subject = WebRequest(
+            endpoint: endpoint,
+            headers: nil,
+            urlParameters: nil,
+            bodyParameters: nil,
+            delivery: delivery,
+            completion: { _, _ in throw DummyError() }
+        )
+
+        XCTAssertThrowsError(try subject.execute())
+    }
+
     func test_can_execute_real_live_json_request_with_passing_result() {
         startServer()
         let expectation = self.expectation(description: "RealJSONCompleted")
