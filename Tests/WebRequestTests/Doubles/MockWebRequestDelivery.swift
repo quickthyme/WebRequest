@@ -9,17 +9,17 @@ class MockWebRequestDelivery : WebRequestDelivery {
     }
 
     var didCall_deliver: Bool = false
-    func deliver(request:WebRequest) {
+    func deliver(request:WebRequest) throws {
         didCall_deliver = true
 
         let url : URL
-        
+
         if let urlString = request.endpoint.urlString {
             let turl = URL(string: urlString)
             XCTAssertNotNil(turl)
             url = turl!
         }
-        
+
         else {
             var urlComponents = URLComponents(string: request.endpoint.urlBase)
             XCTAssertNotNil(urlComponents)
@@ -28,18 +28,17 @@ class MockWebRequestDelivery : WebRequestDelivery {
             XCTAssertNotNil(turl)
             url = turl!
         }
-        
-        self.deliverURL(url, request: request)
+
+        try self.deliverURL(url, request: request)
     }
-    
-    private func deliverURL(_ url: URL, request:WebRequest) {
+
+    private func deliverURL(_ url: URL, request:WebRequest) throws {
         let data = url.absoluteString.data(using: .utf8)
-        send(completion: request.completion, request: request, testStatusCode: .pass, data: data)
+        try complete(request: request, testStatusCode: .pass, data: data)
     }
-    
-    private func send(completion:WebRequest.Completion?, request: WebRequest, testStatusCode: TestStatusCode, data: Data? = nil) {
+
+    private func complete(request: WebRequest, testStatusCode: TestStatusCode, data: Data? = nil) throws {
         let result = WebRequest.Result(status: testStatusCode.rawValue, headers:[:], data: data)
-        completion?(result, request)
+        try request.completion?(result, request)
     }
-    
 }
