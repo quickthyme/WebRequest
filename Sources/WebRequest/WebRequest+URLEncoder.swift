@@ -21,7 +21,7 @@ extension WebRequest : URLEncoder {
     }
 
     static func urlEncode(string: String) -> String {
-        let allowed1 = CharacterSet(charactersIn: "-._~/?")
+        let allowed1 = CharacterSet(charactersIn: "-._~/?@")
         let allowed2 = CharacterSet.alphanumerics
         return string.addingPercentEncoding(withAllowedCharacters: allowed1.union(allowed2)) ?? ""
     }
@@ -35,7 +35,7 @@ extension WebRequest : URLEncoder {
     }
 
     static func urlFormEncode(string: String) -> String {
-        let allowed1 = CharacterSet(charactersIn: "*-._ ")
+        let allowed1 = CharacterSet(charactersIn: "*-._@ ")
         let allowed2 = CharacterSet.alphanumerics
         return (string.addingPercentEncoding(withAllowedCharacters: allowed1.union(allowed2)) ?? "")
             .replacingOccurrences(of: " ", with: "+")
