@@ -46,7 +46,7 @@ open class FileDownloadWebRequestDelivery : HTTPWebRequestDelivery, URLSessionDo
         if FileManager.default.fileExists(atPath: target.path) {
             if FileManager.default.fileExists(atPath: destination.path) {
                 do { try FileManager.default.removeItem(at: destination) }
-                catch {print(error)}
+                catch { print(error) }
             }
             do { try FileManager.default.moveItem(at: target, to: destination) }
             catch { print(error) }
