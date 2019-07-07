@@ -63,21 +63,25 @@ public struct WebRequest {
                 headers: [String:String]?,
                 urlParameters: [String:String]?,
                 delivery: FileDownloadWebRequestDelivery?,
-                onDataReceived: DataReceived?) {
+                onDataReceived: DataReceived?,
+                completion: Completion?) {
         if (endpoint != nil) { self.endpoint = endpoint! }
         self.headers = headers
         self.urlParameters = urlParameters
         self.delivery = delivery
         self.onDataReceived = onDataReceived
+        self.completion = completion
     }
     
     public init(urlString: String,
                 method: WebRequest.Method,
                 delivery: ProgressFileDownloadWebRequestDelivery?,
-                onDataReceived: DataReceived?) {
+                onDataReceived: DataReceived?,
+                completion: Completion?) {
         self.endpoint = DefaultEndpoint(method, urlString)
         self.delivery = delivery
         self.onDataReceived = onDataReceived
+        self.completion = completion
     }
 
     public init(urlString: String,

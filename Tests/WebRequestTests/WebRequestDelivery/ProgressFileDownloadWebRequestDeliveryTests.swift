@@ -28,7 +28,8 @@ class ProgressFileDownloadWebRequestDeliveryTests: XCTestCase {
         webRequest = WebRequest(urlString: "https://path/to/pdf.pdf",
                             method: .GET,
                             delivery: subject,
-                            onDataReceived: onDataReceived)
+                            onDataReceived: onDataReceived,
+                            completion: completion)
         
          subject.webRequest = webRequest;
     }
@@ -39,11 +40,15 @@ class ProgressFileDownloadWebRequestDeliveryTests: XCTestCase {
         testStatus = result.status
         self.expectation!.fulfill()
     }
+    
+    func completion(result: WebRequest.Result, request: WebRequest) {
+        testStatus = result.status
+        self.expectation!.fulfill()
+    }
 
     func test_given_ProgressFileDownloadWebRequestDelivery_WHEN_zero_bytes_are_written_THEN_percentComplete_is_0() {
         
         expectation = self.expectation(description: "test_given_ProgressFileDownloadWebRequestDelivery_WHEN_zero_bytes_are_written_THEN_percentComplete_is_0")
-       
         subject.urlSession(urlSession!, downloadTask: downloadRequest!, didWriteData: 0, totalBytesWritten: 0, totalBytesExpectedToWrite: 100)
         
         waitForExpectations(timeout: 10.0) { _ in
@@ -56,7 +61,7 @@ class ProgressFileDownloadWebRequestDeliveryTests: XCTestCase {
     func test_given_ProgressFileDownloadWebRequestDelivery_WHEN_20_bytes_are_written_out_of_100_THEN_percentComplete_is_20() {
         
         expectation = self.expectation(description: "test_given_ProgressFileDownloadWebRequestDelivery_WHEN_20_bytes_are_written_out_of_100_THEN_percentComplete_is_20")
-
+    
         subject.urlSession(urlSession!, downloadTask: downloadRequest!, didWriteData: 0, totalBytesWritten: 20, totalBytesExpectedToWrite: 100)
         
         waitForExpectations(timeout: 10.0) { _ in
@@ -68,7 +73,7 @@ class ProgressFileDownloadWebRequestDeliveryTests: XCTestCase {
     
     func test_given_ProgressFileDownloadWebRequestDelivery_WHEN_91_bytes_are_written_out_of_100_THEN_percentComplete_is_20() {
         
-        expectation = self.expectation(description: "test_given_ProgressFileDownloadWebRequestDelivery_WHEN_20_bytes_are_written_out_of_100_THEN_percentComplete_is_20")
+        expectation = self.expectation(description: "test_given_ProgressFileDownloadWebRequestDelivery_WHEN_91_bytes_are_written_out_of_100_THEN_percentComplete_is_20")
         subject.urlSession(urlSession!, downloadTask: downloadRequest!, didWriteData: 0, totalBytesWritten: 91, totalBytesExpectedToWrite: 100)
         
         waitForExpectations(timeout: 10.0) { _ in
@@ -80,8 +85,8 @@ class ProgressFileDownloadWebRequestDeliveryTests: XCTestCase {
 
     func test_given_ProgressFileDownloadWebRequestDelivery_WHEN_didFinishDownloading_THEN_percentComplete_is_20() {
         
-        expectation = self.expectation(description: "test_given_ProgressFileDownloadWebRequestDelivery_WHEN_20_bytes_are_written_out_of_100_THEN_percentComplete_is_20")
-        
+        expectation = self.expectation(description: "test_given_ProgressFileDownloadWebRequestDelivery_WHEN_didFinishDownloading_THEN_percentComplete_is_20")
+        expectation!.expectedFulfillmentCount = 2
         subject.urlSession(urlSession!, downloadTask: downloadRequest!, didFinishDownloadingTo: testURL)
         
         waitForExpectations(timeout: 10.0) { _ in
@@ -93,8 +98,8 @@ class ProgressFileDownloadWebRequestDeliveryTests: XCTestCase {
     
     func test_given_ProgressFileDownloadWebRequestDelivery_WHEN_didFinishDownloading_AND_response_is_200_percentComplete_is_100() {
         
-        expectation = self.expectation(description: "test_given_ProgressFileDownloadWebRequestDelivery_WHEN_20_bytes_are_written_out_of_100_THEN_percentComplete_is_20")
-        
+        expectation = self.expectation(description: "test_given_ProgressFileDownloadWebRequestDelivery_WHEN_didFinishDownloading_AND_response_is_200_percentComplete_is_100")
+        expectation?.expectedFulfillmentCount = 2
         subject.urlSession(urlSession!, downloadTask: downloadRequest!, didFinishDownloadingTo: testURL)
         
         waitForExpectations(timeout: 10.0) { _ in
@@ -106,8 +111,8 @@ class ProgressFileDownloadWebRequestDeliveryTests: XCTestCase {
     
     func test_given_ProgressFileDownloadWebRequestDelivery_WHEN_didFinishDownloading_AND_response_is_not_200_percentComplete_is_0() {
         
-        expectation = self.expectation(description: "test_given_ProgressFileDownloadWebRequestDelivery_WHEN_20_bytes_are_written_out_of_100_THEN_percentComplete_is_20")
-        
+        expectation = self.expectation(description: "test_given_ProgressFileDownloadWebRequestDelivery_WHEN_didFinishDownloading_AND_response_is_not_200_percentComplete_is_0")
+        expectation?.expectedFulfillmentCount = 2
         urlSession!.mockResponse = unsuccessfulResponse
         subject.urlSession(urlSession!, downloadTask: downloadRequest!, didFinishDownloadingTo: testURL)
         
@@ -117,6 +122,4 @@ class ProgressFileDownloadWebRequestDeliveryTests: XCTestCase {
             XCTAssertEqual(self.testfilePath!.absoluteString, "test.file")
         }
     }
-    
-    
 }

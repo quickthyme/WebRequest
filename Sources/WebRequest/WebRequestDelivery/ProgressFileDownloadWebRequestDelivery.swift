@@ -25,6 +25,7 @@ open class ProgressFileDownloadWebRequestDelivery: FileDownloadWebRequestDeliver
             fulfillDataReceived(status: status, percentComplete: ONE_HUDRED_PERCENT)
         }
 
+        fulfillCompletion(downloadTask: downloadTask)
          self.webRequest = nil
     }
     
