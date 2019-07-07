@@ -3,7 +3,7 @@ import Foundation
 open class ProgressFileDownloadWebRequestDelivery: FileDownloadWebRequestDelivery {
 
     let divisor = pow(10.0, Double(2))
-    let ONE_HUDRED_PERCENT = 100
+    let ONE_HUNDRED_PERCENT = 100
     let ZERO_PERCENT = 0
     
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
@@ -22,7 +22,7 @@ open class ProgressFileDownloadWebRequestDelivery: FileDownloadWebRequestDeliver
         } else {
             let downloadURL = location
             doFileManagement(target: downloadURL, destination: targetURL)
-            fulfillDataReceived(status: status, percentComplete: ONE_HUDRED_PERCENT)
+            fulfillDataReceived(status: status, percentComplete: ONE_HUNDRED_PERCENT)
         }
 
         fulfillCompletion(downloadTask: downloadTask)
