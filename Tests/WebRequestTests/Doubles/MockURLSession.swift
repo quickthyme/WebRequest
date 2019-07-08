@@ -13,6 +13,7 @@ class MockURLSession : URLSession {
     var mockResponse : URLResponse?
     var mockError    : Error?
     
+    
     required init(configuration: URLSessionConfiguration) {
         self.testConfiguration = configuration
     }
@@ -80,10 +81,13 @@ class MockURLSessionDownloadTask : URLSessionDownloadTask {
     var mockResponse : URLResponse? { return self.mockSession?.mockResponse }
     var mockError    : Error?       { return self.mockSession?.mockError }
     
+    override var response: URLResponse? { return self.mockResponse }
+    
     init(mockSession: MockURLSession, url:URL) {
         self.mockSession = mockSession
         self.mockURL = url
     }
+    
     
     override func resume() {
         

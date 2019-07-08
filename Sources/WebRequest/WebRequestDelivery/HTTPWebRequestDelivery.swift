@@ -13,7 +13,6 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
             return
         }
 
-        // url session and headers
         let config = self.getURLSessionConfiguration()
 
         if let headers = self.getHeaders(request: request) {
@@ -22,16 +21,13 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
 
         let urlSession = self.getURLSession(configuration: config)
 
-        // url request and method
         var urlRequest = self.getURLRequest(url: url)
         urlRequest.httpMethod = request.endpoint.method.rawValue
 
-        // Body parameters
         if let bodyData = self.getBodyData(request: request) {
             urlRequest.httpBody = bodyData
         }
 
-        // execute delivery
         try self.executeDelivery(request: request, urlSession: urlSession, urlRequest: urlRequest)
     }
 
@@ -42,13 +38,11 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
             return url
         }
 
-        // base url/path
         var urlComponents = URLComponents(string: request.endpoint.urlBase) ?? URLComponents()
 
         let pathComponents = request.endpoint.urlPath.components(separatedBy: "?")
         urlComponents.path = pathComponents.first ?? request.endpoint.urlPath
 
-        // url parameters
         if (pathComponents.count > 1) {
             let queryComponents = pathComponents[1].components(separatedBy: "&")
             urlComponents.queryItems =
@@ -65,7 +59,6 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
                                         value: WebRequest.urlEncode($0.value)) }
         }
 
-        // finalized url
         return urlComponents.url
     }
 
@@ -140,11 +133,9 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
                      data: taskData)
     }
 
-
     open func complete(request: WebRequest, errorCode: ErrorCode) throws {
         try self.complete(request: request, status: errorCode.rawValue)
     }
-
 
     open func complete(request: WebRequest,
                        status: Int,
@@ -154,5 +145,10 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
         let headers = headers ?? [:]
         let result = WebRequest.Result(status: status, headers: headers, data: data)
         try request.completion?(result, request)
+    }
+    
+    open func onDataReceived(request: WebRequest, status: Int, percentComplete: Int, target: URL ) throws {
+        let result = WebRequest.Result(status: status, headers: [:] , data: nil)
+        try request.onDataReceived?(result, request, percentComplete, target);
     }
 }
