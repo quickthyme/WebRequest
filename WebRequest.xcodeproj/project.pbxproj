@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BC07A94922CC4D8800EB29EA /* ProgressFileDownloadWebRequestDelivery.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC07A94822CC4D8800EB29EA /* ProgressFileDownloadWebRequestDelivery.swift */; };
+		BC101BD622CD4CCD00E2AA0D /* ProgressFileDownloadWebRequestDeliveryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC101BD522CD4CCD00E2AA0D /* ProgressFileDownloadWebRequestDeliveryTests.swift */; };
 		DC0B165D2270BDA9000DA8E8 /* WebRequest+Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0B165C2270BDA9000DA8E8 /* WebRequest+Result.swift */; };
 		DC0B165F2270C43B000DA8E8 /* WebRequestEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0B165E2270C43B000DA8E8 /* WebRequestEndpoint.swift */; };
 		DC8F2B6B2233590200277F70 /* libWebRequest-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC8F2B61223358CD00277F70 /* libWebRequest-iOS.a */; };
@@ -47,6 +49,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BC07A94822CC4D8800EB29EA /* ProgressFileDownloadWebRequestDelivery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressFileDownloadWebRequestDelivery.swift; sourceTree = "<group>"; };
+		BC101BD522CD4CCD00E2AA0D /* ProgressFileDownloadWebRequestDeliveryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressFileDownloadWebRequestDeliveryTests.swift; sourceTree = "<group>"; };
 		DC0B165C2270BDA9000DA8E8 /* WebRequest+Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebRequest+Result.swift"; sourceTree = "<group>"; };
 		DC0B165E2270C43B000DA8E8 /* WebRequestEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRequestEndpoint.swift; sourceTree = "<group>"; };
 		DC8F2B61223358CD00277F70 /* libWebRequest-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libWebRequest-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -172,6 +176,7 @@
 				DCB68C6E2022EC9E00973778 /* HTTPWebRequestDelivery.swift */,
 				DCB68C6F2022EC9E00973778 /* JSONWebRequestDelivery.swift */,
 				DCB68C702022EC9E00973778 /* MultipartFormUploadWebRequestDelivery.swift */,
+				BC07A94822CC4D8800EB29EA /* ProgressFileDownloadWebRequestDelivery.swift */,
 			);
 			path = WebRequestDelivery;
 			sourceTree = "<group>";
@@ -190,6 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				DCB68C832022FA3200973778 /* JSONWebRequestDeliveryTests.swift */,
+				BC101BD522CD4CCD00E2AA0D /* ProgressFileDownloadWebRequestDeliveryTests.swift */,
 			);
 			path = WebRequestDelivery;
 			sourceTree = "<group>";
@@ -291,6 +297,7 @@
 				DC8F2B6C223359CC00277F70 /* WebRequest.swift in Sources */,
 				DC8F2B6D223359CF00277F70 /* WebRequest+URLEncoder.swift in Sources */,
 				DC8F2B6F223359D400277F70 /* HTTPWebRequestDelivery.swift in Sources */,
+				BC07A94922CC4D8800EB29EA /* ProgressFileDownloadWebRequestDelivery.swift in Sources */,
 				DC0B165F2270C43B000DA8E8 /* WebRequestEndpoint.swift in Sources */,
 				DC8F2B70223359D400277F70 /* JSONWebRequestDelivery.swift in Sources */,
 				DC0B165D2270BDA9000DA8E8 /* WebRequest+Result.swift in Sources */,
@@ -309,6 +316,7 @@
 				DCB68C842022FA3300973778 /* JSONWebRequestDeliveryTests.swift in Sources */,
 				DCB68C862022FA8500973778 /* MockEndpoint.swift in Sources */,
 				DCB68C5E2022CCE500973778 /* WebRequestTests.swift in Sources */,
+				BC101BD622CD4CCD00E2AA0D /* ProgressFileDownloadWebRequestDeliveryTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

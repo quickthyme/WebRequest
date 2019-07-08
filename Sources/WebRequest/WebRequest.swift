@@ -6,6 +6,7 @@ public protocol WebRequestDelivery {
 
 public struct WebRequest {
     public typealias Completion = (Result, WebRequest) throws -> ()
+    public typealias DataReceived = (Result, WebRequest, Int, URL) throws -> ()
 
     public var endpoint        : WebRequestEndpoint = DefaultEndpoint(.GET, nil)
     public var headers         : [String:String]? = nil
@@ -14,6 +15,7 @@ public struct WebRequest {
     public var bodyData        : Data? = nil
     public var delivery        : WebRequestDelivery?   = nil
     public var completion      : Completion? = nil
+    public var onDataReceived  : DataReceived? = nil
 
     public enum Method : String {
         case OPTIONS, GET, HEAD, POST, PUT, PATCH, DELETE, TRACE, CONNECT
@@ -54,6 +56,31 @@ public struct WebRequest {
         self.urlParameters = urlParameters
         self.bodyData = bodyData
         self.delivery = delivery
+        self.completion = completion
+    }
+    
+    public init(endpoint: WebRequestEndpoint?,
+                headers: [String:String]?,
+                urlParameters: [String:String]?,
+                delivery: FileDownloadWebRequestDelivery?,
+                onDataReceived: DataReceived?,
+                completion: Completion?) {
+        if (endpoint != nil) { self.endpoint = endpoint! }
+        self.headers = headers
+        self.urlParameters = urlParameters
+        self.delivery = delivery
+        self.onDataReceived = onDataReceived
+        self.completion = completion
+    }
+    
+    public init(urlString: String,
+                method: WebRequest.Method,
+                delivery: ProgressFileDownloadWebRequestDelivery?,
+                onDataReceived: DataReceived?,
+                completion: Completion?) {
+        self.endpoint = DefaultEndpoint(method, urlString)
+        self.delivery = delivery
+        self.onDataReceived = onDataReceived
         self.completion = completion
     }
 

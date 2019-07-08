@@ -29,18 +29,28 @@ open class FileDownloadWebRequestDelivery : HTTPWebRequestDelivery, URLSessionDo
     
     open func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         let downloadURL = location
-        
-        if FileManager.default.fileExists(atPath: downloadURL.path) {
-            do { try FileManager.default.moveItem(at: downloadURL, to: targetURL) }
-            catch _ {  }
-        }
-        
+        doFileManagement(target: downloadURL, destination: targetURL)
+        fulfillCompletion(downloadTask: downloadTask)
+    }
+    
+    func fulfillCompletion(downloadTask: URLSessionDownloadTask) {
         let request = self.webRequest!
         let response = downloadTask.response as? HTTPURLResponse
         let status : Int = response?.statusCode ?? WebRequest.Result.ErrorCode.MalformedResponse.rawValue
         let headers = response?.allHeaderFields ?? [:]
         try? self.complete(request: request, status: status, headers: headers)
         self.webRequest = nil
+    }
+    
+    func doFileManagement(target: URL, destination: URL) {
+        if FileManager.default.fileExists(atPath: target.path) {
+            if FileManager.default.fileExists(atPath: destination.path) {
+                do { try FileManager.default.removeItem(at: destination) }
+                catch { print(error) }
+            }
+            do { try FileManager.default.moveItem(at: target, to: destination) }
+            catch { print(error) }
+        }
     }
     
     open func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
