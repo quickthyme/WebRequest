@@ -1,4 +1,3 @@
-
 import Foundation
 
 open class MultipartFormUploadWebRequestDelivery : HTTPWebRequestDelivery {

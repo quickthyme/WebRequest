@@ -1,6 +1,7 @@
 import Foundation
 
 extension WebRequest {
+
     public struct Result {
         public var status : Int = -1
         public var headers: [AnyHashable:Any]

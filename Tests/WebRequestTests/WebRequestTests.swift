@@ -28,6 +28,7 @@ class WebRequestTests: XCTestCase {
             urlParameters: nil,
             bodyParameters: nil,
             delivery: delivery,
+            validator: BasicHTTPResultValidator(),
             completion: { [expectation] result, request in
                 XCTAssert(result.status == MockWebRequestDelivery.TestStatusCode.pass.rawValue)
                 expectation.fulfill()
@@ -52,6 +53,7 @@ class WebRequestTests: XCTestCase {
             urlParameters: nil,
             bodyParameters: nil,
             delivery: delivery,
+            validator: BasicHTTPResultValidator(),
             completion: { [expectation] result, request in
                 XCTAssert(result.status == MockWebRequestDelivery.TestStatusCode.pass.rawValue)
                 XCTAssertNotNil(result.data)
@@ -78,6 +80,7 @@ class WebRequestTests: XCTestCase {
             urlParameters: nil,
             bodyParameters: nil,
             delivery: delivery,
+            validator: BasicHTTPResultValidator(),
             completion: nil
         )
 

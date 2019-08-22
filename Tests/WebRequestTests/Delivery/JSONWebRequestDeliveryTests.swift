@@ -1,4 +1,3 @@
-
 import XCTest
 import WebRequest
 
@@ -29,6 +28,7 @@ class JSONWebRequestDeliveryTests: XCTestCase {
             urlParameters: nil,
             bodyParameters: nil,
             delivery: delivery,
+            validator: BasicHTTPResultValidator(),
             completion: { _, _ in throw DummyError() }
         )
 
@@ -50,6 +50,7 @@ class JSONWebRequestDeliveryTests: XCTestCase {
             urlParameters: nil,
             bodyParameters: nil,
             delivery: delivery,
+            validator: BasicHTTPResultValidator(),
             completion: { [expectation] result, request in
                 resultStatus = result.status
                 resultObject = try? JSONSerialization
