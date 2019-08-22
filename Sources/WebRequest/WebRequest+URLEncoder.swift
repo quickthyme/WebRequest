@@ -1,7 +1,7 @@
 
 import Foundation
 
-protocol URLEncoder {
+internal protocol URLEncoder {
 
     // RFC-3986
     static func urlEncode<T>(_ value: T) -> T

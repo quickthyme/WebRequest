@@ -5,8 +5,10 @@ import WebRequest
 class MockWebRequestDelivery : WebRequestDelivery {
 
     enum TestStatusCode : Int {
-        case fail = 0, pass = 1
+        case fail = 0, pass = 200, unauthorized = 401
     }
+
+    var testStatusCode: TestStatusCode = .pass
 
     var didCall_deliver: Bool = false
     func deliver(request:WebRequest) throws {
@@ -34,7 +36,7 @@ class MockWebRequestDelivery : WebRequestDelivery {
 
     private func deliverURL(_ url: URL, request:WebRequest) throws {
         let data = url.absoluteString.data(using: .utf8)
-        try complete(request: request, testStatusCode: .pass, data: data)
+        try complete(request: request, testStatusCode: testStatusCode, data: data)
     }
 
     private func complete(request: WebRequest, testStatusCode: TestStatusCode, data: Data? = nil) throws {

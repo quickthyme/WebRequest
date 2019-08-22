@@ -1,4 +1,3 @@
-
 import Foundation
 
 open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
@@ -119,6 +118,7 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
         }
 
         let timeoutResult = group.wait(timeout: .now() + timeoutInterval)
+
         guard (timeoutResult != .timedOut) else {
             try complete(request: request, errorCode: .TimedOut)
             return
