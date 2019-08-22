@@ -4,7 +4,6 @@ public protocol WebRequestSessionProviding: class {
     var delegate: WebRequestSessionProvidingDelegate? { get set }
     var current: WebRequestSession? { get }
     func refresh()
-    func clear()
 }
 
 public protocol WebRequestSessionProvidingDelegate: class {
