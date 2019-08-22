@@ -28,6 +28,7 @@ class ProgressFileDownloadWebRequestDeliveryTests: XCTestCase {
         webRequest = WebRequest(urlString: "https://path/to/pdf.pdf",
                             method: .GET,
                             delivery: subject,
+                            validator: BasicHTTPResultValidator(),
                             onDataReceived: onDataReceived,
                             completion: completion)
         
