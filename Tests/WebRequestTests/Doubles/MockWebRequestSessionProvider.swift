@@ -19,9 +19,4 @@ class MockWebRequestSessionProvider: WebRequestSessionProviding {
             delegate?.sessionProvider(self, didFailToRefresh: ())
         }
     }
-
-    var didCall_clear: Bool = false
-    func clear() {
-        didCall_clear = true
-    }
 }

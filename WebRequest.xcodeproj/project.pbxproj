@@ -30,7 +30,6 @@
 		DCBC7B96230CE18C002FBF61 /* WebRequestSessionProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBC7B95230CE18C002FBF61 /* WebRequestSessionProviding.swift */; };
 		DCBC7B98230CE1E4002FBF61 /* WebRequestSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBC7B97230CE1E4002FBF61 /* WebRequestSession.swift */; };
 		DCBC7B9C230CE293002FBF61 /* WebRequestManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBC7B9B230CE293002FBF61 /* WebRequestManaging.swift */; };
-		DCBC7B9E230CE2DC002FBF61 /* WebRequestOAuthSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBC7B9D230CE2DC002FBF61 /* WebRequestOAuthSession.swift */; };
 		DCBC7BA1230E2C26002FBF61 /* WebRequestManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBC7BA0230E2C05002FBF61 /* WebRequestManagerTests.swift */; };
 		DCBC7BA3230E2CB1002FBF61 /* MockWebRequestSessionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBC7BA2230E2CB1002FBF61 /* MockWebRequestSessionProvider.swift */; };
 		DCBC7BA5230E346B002FBF61 /* MockWebRequestSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBC7BA4230E346A002FBF61 /* MockWebRequestSession.swift */; };
@@ -85,7 +84,6 @@
 		DCBC7B95230CE18C002FBF61 /* WebRequestSessionProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRequestSessionProviding.swift; sourceTree = "<group>"; };
 		DCBC7B97230CE1E4002FBF61 /* WebRequestSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRequestSession.swift; sourceTree = "<group>"; };
 		DCBC7B9B230CE293002FBF61 /* WebRequestManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRequestManaging.swift; sourceTree = "<group>"; };
-		DCBC7B9D230CE2DC002FBF61 /* WebRequestOAuthSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRequestOAuthSession.swift; sourceTree = "<group>"; };
 		DCBC7BA0230E2C05002FBF61 /* WebRequestManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRequestManagerTests.swift; sourceTree = "<group>"; };
 		DCBC7BA2230E2CB1002FBF61 /* MockWebRequestSessionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWebRequestSessionProvider.swift; sourceTree = "<group>"; };
 		DCBC7BA4230E346A002FBF61 /* MockWebRequestSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWebRequestSession.swift; sourceTree = "<group>"; };
@@ -247,7 +245,6 @@
 			isa = PBXGroup;
 			children = (
 				DCBC7B97230CE1E4002FBF61 /* WebRequestSession.swift */,
-				DCBC7B9D230CE2DC002FBF61 /* WebRequestOAuthSession.swift */,
 				DCBC7B95230CE18C002FBF61 /* WebRequestSessionProviding.swift */,
 			);
 			path = Session;
@@ -366,7 +363,6 @@
 			files = (
 				DCBC7B8F230C5A07002FBF61 /* BasicHTTPResultValidator.swift in Sources */,
 				DC8F2B6C223359CC00277F70 /* WebRequest.swift in Sources */,
-				DCBC7B9E230CE2DC002FBF61 /* WebRequestOAuthSession.swift in Sources */,
 				DC8F2B6D223359CF00277F70 /* WebRequest+URLEncoder.swift in Sources */,
 				DC8F2B6F223359D400277F70 /* HTTPWebRequestDelivery.swift in Sources */,
 				BC07A94922CC4D8800EB29EA /* ProgressFileDownloadWebRequestDelivery.swift in Sources */,
