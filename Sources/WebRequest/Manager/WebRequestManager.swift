@@ -12,15 +12,19 @@ public class WebRequestManager: WebRequestManaging {
 
     private let execQueue: DispatchQueue = DispatchQueue(label: "WebRequestQueue.performQueue",
                                                          qos: .background,
-                                                         attributes: [],
+                                                         attributes: .concurrent,
                                                          autoreleaseFrequency: .inherit,
                                                          target: nil)
 
-    internal var requests: [WebRequest] = []
+    internal var requests: Set<Wrapper> = Set<Wrapper>()
 
-    internal var isBusy: Bool = false
+    public var timeoutInterval: TimeInterval = 60.0
 
-    public let timeoutInterval: TimeInterval = 60.0
+    public var lastRefresh: TimeInterval = 0.0
+
+    private let refreshThreshold: TimeInterval = 120.0
+
+    private var isRefreshing: Bool = false
 
     public var sessionProvider: WebRequestSessionProviding! {
         didSet { sessionProvider?.delegate = self }
@@ -33,132 +37,153 @@ public class WebRequestManager: WebRequestManaging {
     private init() { /**/ }
 
     public init(sessionProvider: WebRequestSessionProviding?,
-                applySession: SessionApplier?) {
+                applySession: SessionApplier?,
+                timeoutInterval: TimeInterval = 60.0,
+                lastRefresh: TimeInterval = 0.0) {
         set(sessionProvider: sessionProvider,
-            applySession: applySession)
+            applySession: applySession,
+            timeoutInterval: timeoutInterval,
+            lastRefresh: lastRefresh)
     }
 
     public func set(sessionProvider: WebRequestSessionProviding?,
-                    applySession: SessionApplier?) {
+                    applySession: SessionApplier?,
+                    timeoutInterval: TimeInterval = 60.0,
+                    lastRefresh: TimeInterval = 0.0) {
         self.sessionProvider = sessionProvider
         self.applySession = applySession
+        self.timeoutInterval = timeoutInterval
+        self.lastRefresh = lastRefresh
     }
-}
 
-public extension WebRequestManager /*: WebRequestManaging */ {
-
-    func begin(request: WebRequest) throws {
-        let originalRequest = request
-        var modifiedRequest = request
-
-        var pendingResult: WebRequest.Result? = nil
-        var refreshAttemptsMade: Int = 0
-
+    public func begin(request: WebRequest) throws {
         let group = DispatchGroup()
         group.enter()
 
-        modifiedRequest.completion = { result, request in
-            if let validator = request.validator,
-                validator.isUnauthorized(result),
-                refreshAttemptsMade < 1 {
-                refreshAttemptsMade += 1
-                self.sessionProvider.refresh()
-            } else {
-                pendingResult = result
-                group.leave()
-            }
-        }
-
-        enqueue(modifiedRequest)
+        let wrapper = Wrapper(request: request,
+                              onStateChange: getOnStateChange(in: group))
+        stage(wrapper)
         begin()
-
         let timeoutResult = group.wait(timeout: .now() + timeoutInterval)
-
-        if (timeoutResult != .timedOut),
-            let actualResult = pendingResult {
-            try originalRequest.completion?(actualResult, originalRequest)
-            self.removeNext()
-            self.beginNext()
-            
-        } else {
-            let timeoutResult = WebRequest.Result(status: ErrorCode.TimedOut.rawValue)
-            try originalRequest.completion?(timeoutResult, originalRequest)
-            isBusy = false
-        }
-    }
-
-    func flush() {
-        accessQueue.sync {
-            self.requests = []
-            self.isBusy = false
-        }
+        try end(wrapper, timeoutResult)
     }
 }
 
 private extension WebRequestManager {
 
-    func begin() {
-        guard (!isBusy) else { return }
-        self.isBusy = true
-        beginNext()
-    }
+    func getOnStateChange(in group: DispatchGroup) -> Wrapper.OnStateChange {
+        return { wrapper in
+            switch wrapper.state {
 
-    func beginNext() {
-        execQueue.async {
-            self.isBusy = !( self.runNext() )
-        }
-    }
+            case .ready:
+                break
 
-    func runNext() -> Bool {
-        guard let request = getNext() else { return false }
+            case .running:
+                break
 
-        guard let session = self.sessionProvider?.current else {
-            failNext(usingStatus: 401)
-            return false
-        }
+            case .unauthorized:
+                switch (true) {
 
-        let readyRequest = applySession(request, session)
-        try? readyRequest.execute()
+                case (self.isRefreshing):
+                    break
 
-        return true
-    }
+                case (self.shouldRefresh(since: wrapper.timestamp)):
+                    self.performRefresh()
 
-    func getNext() -> WebRequest? {
-        var request: WebRequest?
-        accessQueue.sync {
-            request = self.requests.first
-        }
-        return request
-    }
+                case (wrapper.attempts < wrapper.maxAttempts):
+                    self.begin()
 
-    func removeNext() {
-        accessQueue.sync {
-            if !(self.requests.isEmpty) {
-                _ = self.requests.removeFirst()
+                default:
+                    group.leave()
+                }
+
+            case .cancelled:
+                group.leave()
+
+            case .completed:
+                group.leave()
             }
         }
     }
 
-    func failNext(usingStatus status: Int) {
-        guard let request = getNext() else { return }
-        try? request.completion?(WebRequest.Result(status: status), request)
+    func stage(_ wrapper: Wrapper) {
+        accessQueue.sync {
+            _ = self.requests.insert(wrapper)
+        }
     }
 
-    func enqueue(_ request: WebRequest) {
+    func begin() {
+        guard (!isRefreshing) else { return }
         accessQueue.sync {
-            self.requests.append(request)
+            let readyRequests = self.requests
+                .filter { $0.state == .ready || $0.state == .unauthorized }
+
+            guard let session = self.sessionProvider?.current else {
+                if let anyRequest = readyRequests.first?.originalRequest {
+                    self.fail(request: anyRequest, withStatus: 401)
+                }
+                for wrapper in readyRequests { wrapper.state = .cancelled }
+                return
+            }
+
+            for wrapper in readyRequests {
+                wrapper.state = .running
+                wrapper.modifiedRequest = applySession(wrapper.modifiedRequest, session)
+                execQueue.async {
+                    try? wrapper.execute()
+                }
+            }
         }
+    }
+
+    func end(_ wrapper: Wrapper, _ timeoutResult: DispatchTimeoutResult) throws {
+        self.remove(wrapper)
+
+        guard (wrapper.state != .cancelled) else { return }
+
+        guard (timeoutResult != .timedOut),
+            let actualResult = wrapper.result else {
+                let timeoutResult = WebRequest.Result(status: ErrorCode.TimedOut.rawValue)
+                try wrapper.originalRequest.completion?(timeoutResult, wrapper.originalRequest)
+                return
+        }
+
+        try wrapper.originalRequest.completion?(actualResult, wrapper.originalRequest)
+    }
+
+    func shouldRefresh(since timestamp: TimeInterval) -> Bool {
+        return timestamp > (lastRefresh + refreshThreshold)
+    }
+
+    func performRefresh() {
+        isRefreshing = true
+        sessionProvider.refresh()
+    }
+
+    func remove(_ wrapper: Wrapper) {
+        accessQueue.sync {
+            if !(self.requests.isEmpty) {
+                _ = self.requests.remove(wrapper)
+            }
+        }
+    }
+
+    func fail(request: WebRequest, withStatus status: Int) {
+        try? request.completion?(WebRequest.Result(status: status), request)
     }
 }
 
 extension WebRequestManager: WebRequestSessionProvidingDelegate {
 
     public func sessionProvider(_ sessionProvider: WebRequestSessionProviding, didRefreshSession: WebRequestSession) {
-        beginNext()
+        lastRefresh = Date().timeIntervalSinceReferenceDate
+        isRefreshing = false
+        begin()
     }
 
     public func sessionProvider(_ sessionProvider: WebRequestSessionProviding, didFailToRefresh: Void) {
-        failNext(usingStatus: 401)
-        flush()
+        lastRefresh = Date().timeIntervalSinceReferenceDate
+        isRefreshing = false
+        begin()
     }
 }
