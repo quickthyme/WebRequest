@@ -54,6 +54,48 @@ class WebRequestManagerTests: XCTestCase {
         XCTAssert(receivedResult!.status == StatusCode.pass.rawValue)
     }
 
+    func test_begin_request_with_multiple_sessions_should_all_complete() {
+        var receivedResult1: WebRequest.Result? = nil
+        var receivedResult2: WebRequest.Result? = nil
+        let expectComplete1 = expectation(description: "1 should complete")
+        let expectComplete2 = expectation(description: "2 should complete")
+
+        mockSessionProvider.current = MockWebRequestSession()
+        let mockDelivery1 = MockWebRequestDelivery()
+        mockDelivery1.testStatusCode = .pass
+
+        let mockDelivery2 = MockWebRequestDelivery()
+        mockDelivery2.testStatusCode = .fail
+
+        let request1 = WebRequest(urlString: "http://localhost:8888",
+                                  method: .GET,
+                                  delivery: mockDelivery1,
+                                  validator: BasicHTTPResultValidator(),
+                                  completion: ({ result, _ in
+                                    receivedResult1 = result
+                                    expectComplete1.fulfill()
+                                  }))
+
+        let request2 = WebRequest(urlString: "http://localhost:8888",
+                                  method: .PUT,
+                                  delivery: mockDelivery2,
+                                  validator: BasicHTTPResultValidator(),
+                                  completion: ({ result, _ in
+                                    receivedResult2 = result
+                                    expectComplete2.fulfill()
+                                  }))
+
+        try! subject.begin(request: request1)
+        try! subject.begin(request: request2)
+
+        wait(for: [expectComplete1, expectComplete2], timeout: 4.0)
+
+        XCTAssertTrue(mockDelivery1.didCall_deliver)
+        XCTAssertTrue(mockDelivery2.didCall_deliver)
+        XCTAssert(receivedResult1!.status == StatusCode.pass.rawValue)
+        XCTAssert(receivedResult2!.status == StatusCode.fail.rawValue)
+    }
+
     func test_begin_request_without_current_session_should_not_deliver_and_instead_complete_with_unauthorized_status() {
         var receivedResult: WebRequest.Result? = nil
         let expectComplete = expectation(description: "should complete 401")
@@ -105,12 +147,5 @@ class WebRequestManagerTests: XCTestCase {
         XCTAssertTrue(mockDelivery.didCall_deliver)
         XCTAssertEqual(mockSessionProvider.timesCalled_refresh, 1)
         XCTAssert(receivedResult!.status == StatusCode.unauthorized.rawValue)
-    }
-
-    func test_flush_clears_all_pending_requests_and_resets_busy_status() {
-        subject.flush()
-
-        XCTAssertEqual(subject.requests.count, 0)
-        XCTAssertFalse(subject.isBusy)
     }
 }
