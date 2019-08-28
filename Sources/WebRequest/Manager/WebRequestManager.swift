@@ -12,7 +12,7 @@ public class WebRequestManager: WebRequestManaging {
 
     private let execQueue: DispatchQueue = DispatchQueue(label: "WebRequestQueue.performQueue",
                                                          qos: .background,
-                                                         attributes: [],
+                                                         attributes: .concurrent,
                                                          autoreleaseFrequency: .inherit,
                                                          target: nil)
 
