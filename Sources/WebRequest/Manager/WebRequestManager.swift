@@ -57,17 +57,10 @@ public class WebRequestManager: WebRequestManaging {
     }
 
     public func begin(request: WebRequest) throws {
-        guard let session = self.sessionProvider?.current else {
-            self.fail(request: request, withStatus: 401)
-            return
-        }
-
-        let preparedRequest = applySession(request, session)
-
         let group = DispatchGroup()
         group.enter()
 
-        let wrapper = Wrapper(request: preparedRequest,
+        let wrapper = Wrapper(request: request,
                               onStateChange: getOnStateChange(in: group))
         stage(wrapper)
         begin()
@@ -115,8 +108,18 @@ private extension WebRequestManager {
         accessQueue.sync {
             let readyRequests = self.requests
                 .filter { $0.state == .ready || $0.state == .unauthorized }
+
+            guard let session = self.sessionProvider?.current else {
+                if let anyRequest = readyRequests.first?.originalRequest {
+                    self.fail(request: anyRequest, withStatus: 401)
+                }
+                for wrapper in readyRequests { wrapper.state = .cancelled }
+                return
+            }
+
             for wrapper in readyRequests {
                 wrapper.state = .running
+                wrapper.modifiedRequest = applySession(wrapper.modifiedRequest, session)
                 execQueue.async {
                     try? wrapper.execute()
                 }
