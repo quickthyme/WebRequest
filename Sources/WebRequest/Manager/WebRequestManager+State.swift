@@ -49,12 +49,12 @@ public extension WebRequestManager {
 
         private lazy var resultHandler: WebRequest.Completion = { result, request in
             self.result = result
-            self.state = Wrapper.completionState(self, request, result)
+            self.state = self.getState(for: result, of: request)
         }
 
-        private static func completionState(_ wrapper: Wrapper, _ request: WebRequest, _ result: WebRequest.Result) -> State {
+        private func getState(for result: WebRequest.Result, of request: WebRequest) -> State {
             switch true {
-            case wrapper.state == .cancelled:
+            case state == .cancelled:
                 return .cancelled
             case (request.validator?.isUnauthorized(result) ?? false):
                 return .unauthorized
