@@ -27,6 +27,10 @@ public extension WebRequestManager {
 
         public var onStateChange: OnStateChange
 
+        public var attempts: Int = 0
+
+        public let maxAttempts: Int = 2
+
         public init(request: WebRequest, onStateChange: @escaping OnStateChange) {
             self.state = .ready
             self.onStateChange = onStateChange
@@ -44,6 +48,7 @@ public extension WebRequestManager {
         }
 
         public func execute() throws {
+            attempts += 1
             try self.modifiedRequest.execute()
         }
 

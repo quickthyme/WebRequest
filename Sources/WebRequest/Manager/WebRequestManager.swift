@@ -82,9 +82,18 @@ private extension WebRequestManager {
                 break
 
             case .unauthorized:
-                if (self.shouldRefresh(since: wrapper.timestamp)) {
+                switch (true) {
+
+                case (self.isRefreshing):
+                    break
+
+                case (self.shouldRefresh(since: wrapper.timestamp)):
                     self.performRefresh()
-                } else {
+
+                case (wrapper.attempts < wrapper.maxAttempts):
+                    self.begin()
+
+                default:
                     group.leave()
                 }
 
