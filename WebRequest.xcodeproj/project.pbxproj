@@ -33,6 +33,7 @@
 		DCBC7BA1230E2C26002FBF61 /* WebRequestManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBC7BA0230E2C05002FBF61 /* WebRequestManagerTests.swift */; };
 		DCBC7BA3230E2CB1002FBF61 /* MockWebRequestSessionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBC7BA2230E2CB1002FBF61 /* MockWebRequestSessionProvider.swift */; };
 		DCBC7BA5230E346B002FBF61 /* MockWebRequestSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBC7BA4230E346A002FBF61 /* MockWebRequestSession.swift */; };
+		DCBE60B72315B37C008090DC /* WebRequestManager+State.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBE60B62315B37C008090DC /* WebRequestManager+State.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +90,7 @@
 		DCBC7BA4230E346A002FBF61 /* MockWebRequestSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWebRequestSession.swift; sourceTree = "<group>"; };
 		DCBD65D92023A0AD009088DE /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		DCBD65DA2023A0AD009088DE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		DCBE60B62315B37C008090DC /* WebRequestManager+State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebRequestManager+State.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -255,6 +257,7 @@
 			children = (
 				DCBC7B90230C5B8A002FBF61 /* WebRequestManager.swift */,
 				DCBC7B9B230CE293002FBF61 /* WebRequestManaging.swift */,
+				DCBE60B62315B37C008090DC /* WebRequestManager+State.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -361,6 +364,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCBE60B72315B37C008090DC /* WebRequestManager+State.swift in Sources */,
 				DCBC7B8F230C5A07002FBF61 /* BasicHTTPResultValidator.swift in Sources */,
 				DC8F2B6C223359CC00277F70 /* WebRequest.swift in Sources */,
 				DC8F2B6D223359CF00277F70 /* WebRequest+URLEncoder.swift in Sources */,

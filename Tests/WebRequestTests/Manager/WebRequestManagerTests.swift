@@ -106,11 +106,4 @@ class WebRequestManagerTests: XCTestCase {
         XCTAssertEqual(mockSessionProvider.timesCalled_refresh, 1)
         XCTAssert(receivedResult!.status == StatusCode.unauthorized.rawValue)
     }
-
-    func test_flush_clears_all_pending_requests_and_resets_busy_status() {
-        subject.flush()
-
-        XCTAssertEqual(subject.requests.count, 0)
-        XCTAssertFalse(subject.isBusy)
-    }
 }
