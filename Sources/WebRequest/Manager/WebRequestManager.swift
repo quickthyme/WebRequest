@@ -1,8 +1,17 @@
 import Foundation
 
+internal protocol WRNotificationCenterInterface {
+    func post(_ notification: Notification)
+}
+extension NotificationCenter: WRNotificationCenterInterface {}
+
 public class WebRequestManager: WebRequestManaging {
 
-    typealias ErrorCode = WebRequest.Result.ErrorCode
+    public typealias ErrorCode = WebRequest.Result.ErrorCode
+
+    internal var UnauthorizedResponseNotification: Notification {
+        return Notification(name: WebRequestUnauthorizedResponseNotification, object: nil, userInfo: nil)
+    }
 
     private let accessQueue: DispatchQueue = DispatchQueue(label: "WebRequestQueue.accessQueue",
                                                            qos: .background,
@@ -31,6 +40,8 @@ public class WebRequestManager: WebRequestManaging {
     }
 
     public var applySession: SessionApplier!
+
+    internal lazy var notificationCenter: WRNotificationCenterInterface = NotificationCenter.default
 
     public static let shared = WebRequestManager()
 
@@ -119,6 +130,7 @@ private extension WebRequestManager {
                 .filter { $0.state == .ready || $0.state == .unauthorized }
 
             guard let session = self.sessionProvider?.current else {
+                notificationCenter.post(UnauthorizedResponseNotification)
                 if let anyRequest = readyRequests.first?.originalRequest {
                     self.fail(request: anyRequest, withStatus: 401)
                 }
@@ -146,6 +158,10 @@ private extension WebRequestManager {
                 let timeoutResult = WebRequest.Result(status: ErrorCode.TimedOut.rawValue)
                 try wrapper.originalRequest.completion?(timeoutResult, wrapper.originalRequest)
                 return
+        }
+
+        if wrapper.state == .unauthorized {
+            notificationCenter.post(UnauthorizedResponseNotification)
         }
 
         try wrapper.originalRequest.completion?(actualResult, wrapper.originalRequest)

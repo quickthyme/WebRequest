@@ -6,6 +6,7 @@ class WebRequestManagerTests: XCTestCase {
     var subject: WebRequestManager!
     var mockSessionProvider: MockWebRequestSessionProvider!
     var mockApplySession: WebRequestManaging.SessionApplier!
+    var mockNotificationCenter: MockNotificationCenter!
 
     var capturedRequest: WebRequest?
     var capturedSession: WebRequestSession?
@@ -27,6 +28,8 @@ class WebRequestManagerTests: XCTestCase {
         subject = WebRequestManager(sessionProvider: mockSessionProvider,
                                     applySession: mockApplySession)
 
+        mockNotificationCenter = MockNotificationCenter()
+        subject.notificationCenter = mockNotificationCenter
     }
 
     func test_begin_request_with_current_session_should_complete() {
@@ -119,9 +122,11 @@ class WebRequestManagerTests: XCTestCase {
 
         XCTAssertFalse(mockDelivery.didCall_deliver)
         XCTAssert(receivedResult!.status == StatusCode.unauthorized.rawValue)
+        XCTAssertTrue(mockNotificationCenter.didPost)
+        XCTAssertEqual(mockNotificationCenter.postedNotificationName, WebRequestUnauthorizedResponseNotification)
     }
 
-    func test_begin_request_when_getting_unauthorized_result_should_attempt_refresh_once_and_raise_401_if_call_fails_again() {
+    func test_begin_request_when_getting_unauthorized_result_should_attempt_refresh_once_then_raise_401_and_post_notification_if_call_fails_again() {
         var receivedResult: WebRequest.Result? = nil
         let expectComplete = expectation(description: "should refresh")
 
@@ -147,5 +152,7 @@ class WebRequestManagerTests: XCTestCase {
         XCTAssertTrue(mockDelivery.didCall_deliver)
         XCTAssertEqual(mockSessionProvider.timesCalled_refresh, 1)
         XCTAssert(receivedResult!.status == StatusCode.unauthorized.rawValue)
+        XCTAssertTrue(mockNotificationCenter.didPost)
+        XCTAssertEqual(mockNotificationCenter.postedNotificationName, WebRequestUnauthorizedResponseNotification)
     }
 }

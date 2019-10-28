@@ -1,5 +1,7 @@
 import Foundation
 
+public let WebRequestUnauthorizedResponseNotification: Notification.Name = Notification.Name("UnauthorizedResponseNotification")
+
 public protocol WebRequestManaging {
 
     typealias SessionApplier = (WebRequest, WebRequestSession) -> (WebRequest)
