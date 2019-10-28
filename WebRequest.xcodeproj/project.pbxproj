@@ -18,6 +18,7 @@
 		DC8F2B6F223359D400277F70 /* HTTPWebRequestDelivery.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB68C6E2022EC9E00973778 /* HTTPWebRequestDelivery.swift */; };
 		DC8F2B70223359D400277F70 /* JSONWebRequestDelivery.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB68C6F2022EC9E00973778 /* JSONWebRequestDelivery.swift */; };
 		DC8F2B71223359D400277F70 /* MultipartFormUploadWebRequestDelivery.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB68C702022EC9E00973778 /* MultipartFormUploadWebRequestDelivery.swift */; };
+		DCAAB91323676AB4000B3463 /* MockNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAAB91223676AB4000B3463 /* MockNotificationCenter.swift */; };
 		DCB68C5E2022CCE500973778 /* WebRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB68C5D2022CCE500973778 /* WebRequestTests.swift */; };
 		DCB68C6B2022CE6800973778 /* TestHTTPServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB68C6A2022CE6800973778 /* TestHTTPServer.swift */; };
 		DCB68C802022EDD300973778 /* MockWebRequestDelivery.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCB68C7B2022ED2200973778 /* MockWebRequestDelivery.swift */; };
@@ -64,6 +65,7 @@
 		DC0B165C2270BDA9000DA8E8 /* WebRequest+Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WebRequest+Result.swift"; sourceTree = "<group>"; };
 		DC0B165E2270C43B000DA8E8 /* WebRequestEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRequestEndpoint.swift; sourceTree = "<group>"; };
 		DC8F2B61223358CD00277F70 /* libWebRequest-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libWebRequest-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCAAB91223676AB4000B3463 /* MockNotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNotificationCenter.swift; sourceTree = "<group>"; };
 		DCB68C532022CCE500973778 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCB68C582022CCE500973778 /* WebRequestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WebRequestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCB68C5D2022CCE500973778 /* WebRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebRequestTests.swift; sourceTree = "<group>"; };
@@ -210,6 +212,7 @@
 			isa = PBXGroup;
 			children = (
 				DCB68C852022FA8500973778 /* MockEndpoint.swift */,
+				DCAAB91223676AB4000B3463 /* MockNotificationCenter.swift */,
 				DCB68C7A2022ED2200973778 /* MockURLSession.swift */,
 				DCB68C7B2022ED2200973778 /* MockWebRequestDelivery.swift */,
 				DCBC7BA4230E346A002FBF61 /* MockWebRequestSession.swift */,
@@ -387,6 +390,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DCBC7BA3230E2CB1002FBF61 /* MockWebRequestSessionProvider.swift in Sources */,
+				DCAAB91323676AB4000B3463 /* MockNotificationCenter.swift in Sources */,
 				DCBC7B94230C7BEE002FBF61 /* BasicHTTPResultValidatorTests.swift in Sources */,
 				DCB68C812022EDD700973778 /* MockURLSession.swift in Sources */,
 				DCB68C802022EDD300973778 /* MockWebRequestDelivery.swift in Sources */,
