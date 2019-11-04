@@ -130,11 +130,11 @@ private extension WebRequestManager {
                 .filter { $0.state == .ready || $0.state == .unauthorized }
 
             guard let session = self.sessionProvider?.current else {
-                notificationCenter.post(UnauthorizedResponseNotification)
                 if let anyRequest = readyRequests.first?.originalRequest {
                     self.fail(request: anyRequest, withStatus: 401)
                 }
                 for wrapper in readyRequests { wrapper.state = .cancelled }
+                notificationCenter.post(UnauthorizedResponseNotification)
                 return
             }
 
@@ -160,11 +160,11 @@ private extension WebRequestManager {
                 return
         }
 
+        try wrapper.originalRequest.completion?(actualResult, wrapper.originalRequest)
+
         if wrapper.state == .unauthorized {
             notificationCenter.post(UnauthorizedResponseNotification)
         }
-
-        try wrapper.originalRequest.completion?(actualResult, wrapper.originalRequest)
     }
 
     func shouldRefresh(since timestamp: TimeInterval) -> Bool {
