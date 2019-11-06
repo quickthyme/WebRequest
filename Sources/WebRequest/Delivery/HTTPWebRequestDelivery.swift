@@ -44,18 +44,13 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
 
         if (pathComponents.count > 1) {
             let queryComponents = pathComponents[1].components(separatedBy: "&")
+            urlComponents.queryItems = queryComponents
+                .map {
+                    let keyVal = $0.components(separatedBy: "=")
+                    return URLQueryItem(name: keyVal.first ?? "", value: keyVal.last ?? "") }
+        } else if let urlParams  = request.urlParameters {
             urlComponents.queryItems =
-                queryComponents
-                    .map {
-                        let keyVal = $0.components(separatedBy: "=")
-                        return URLQueryItem(name: WebRequest.urlEncode(keyVal.first ?? ""),
-                                            value: WebRequest.urlEncode(keyVal.last ?? "")) }
-        }
-        else if let urlParams  = request.urlParameters {
-            urlComponents.queryItems =
-                urlParams
-                    .map { URLQueryItem(name: WebRequest.urlEncode($0.key),
-                                        value: WebRequest.urlEncode($0.value)) }
+                urlParams.map { URLQueryItem(name: $0.key, value: $0.value) }
         }
 
         return urlComponents.url
@@ -146,7 +141,7 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
         let result = WebRequest.Result(status: status, headers: headers, data: data)
         try request.completion?(result, request)
     }
-    
+
     open func onDataReceived(request: WebRequest, status: Int, percentComplete: Int, target: URL ) throws {
         let result = WebRequest.Result(status: status, headers: [:] , data: nil)
         try request.onDataReceived?(result, request, percentComplete, target);
