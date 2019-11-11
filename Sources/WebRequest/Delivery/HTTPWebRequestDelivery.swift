@@ -3,7 +3,11 @@ import Foundation
 open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
     public typealias ErrorCode = WebRequest.Result.ErrorCode
 
-    public let timeoutInterval: TimeInterval = 60.0
+    public static var timeout: TimeInterval = 60.0
+
+    public var timeoutInterval: TimeInterval {
+        return type(of: self).timeout
+    }
 
     open func deliver(request:WebRequest) throws {
 
