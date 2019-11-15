@@ -27,6 +27,10 @@ public class WebRequestManager: WebRequestManaging {
 
     internal var requests: Set<Wrapper> = Set<Wrapper>()
 
+    private var readyRequests: Set<Wrapper> {
+        return self.requests.filter { $0.state == .ready || $0.state == .unauthorized }
+    }
+
     public var timeoutInterval: TimeInterval = 60.0
 
     public var lastRefresh: TimeInterval = 0.0
@@ -126,15 +130,10 @@ private extension WebRequestManager {
     func begin() {
         guard (!isRefreshing) else { return }
         accessQueue.sync {
-            let readyRequests = self.requests
-                .filter { $0.state == .ready || $0.state == .unauthorized }
+            let readyRequests = self.readyRequests
 
             guard let session = self.sessionProvider?.current else {
-                if let anyRequest = readyRequests.first?.originalRequest {
-                    self.fail(request: anyRequest, withStatus: 401)
-                }
-                for wrapper in readyRequests { wrapper.state = .cancelled }
-                notificationCenter.post(UnauthorizedResponseNotification)
+                self.failUnauthorized()
                 return
             }
 
@@ -160,11 +159,13 @@ private extension WebRequestManager {
                 return
         }
 
-        try wrapper.originalRequest.completion?(actualResult, wrapper.originalRequest)
-
         if wrapper.state == .unauthorized {
-            notificationCenter.post(UnauthorizedResponseNotification)
+            DispatchQueue.main.async {
+                self.notificationCenter.post(self.UnauthorizedResponseNotification)
+            }
         }
+
+        try wrapper.originalRequest.completion?(actualResult, wrapper.originalRequest)
     }
 
     func shouldRefresh(since timestamp: TimeInterval) -> Bool {
@@ -173,7 +174,9 @@ private extension WebRequestManager {
 
     func performRefresh() {
         isRefreshing = true
-        sessionProvider.refresh()
+        execQueue.async {
+            self.sessionProvider.refresh()
+        }
     }
 
     func remove(_ wrapper: Wrapper) {
@@ -186,6 +189,15 @@ private extension WebRequestManager {
 
     func fail(request: WebRequest, withStatus status: Int) {
         try? request.completion?(WebRequest.Result(status: status), request)
+    }
+
+    func failUnauthorized() {
+        let readyRequests = self.readyRequests
+        if let anyRequest = readyRequests.first {
+            self.fail(request: anyRequest.originalRequest, withStatus: 401)
+        }
+        for wrapper in readyRequests { wrapper.state = .cancelled }
+        notificationCenter.post(UnauthorizedResponseNotification)
     }
 }
 

@@ -152,7 +152,16 @@ class WebRequestManagerTests: XCTestCase {
         XCTAssertTrue(mockDelivery.didCall_deliver)
         XCTAssertEqual(mockSessionProvider.timesCalled_refresh, 1)
         XCTAssert(receivedResult!.status == StatusCode.unauthorized.rawValue)
+
+        wait(for: 0.1)
+
         XCTAssertTrue(mockNotificationCenter.didPost)
         XCTAssertEqual(mockNotificationCenter.postedNotificationName, WebRequestUnauthorizedResponseNotification)
+    }
+
+    func wait(for timeout: TimeInterval) {
+        let expectMainThread = expectation(description: "auto timeout")
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeout) { expectMainThread.fulfill() }
+        wait(for: [expectMainThread], timeout: timeout + 0.5)
     }
 }
