@@ -12,6 +12,7 @@ extension WebRequest {
             case MalformedURL  = -8
             case MalformedResponse = -11
             case TimedOut = -12
+            case NoInternetConnection = -13
         }
 
         public init(status: Int) {
