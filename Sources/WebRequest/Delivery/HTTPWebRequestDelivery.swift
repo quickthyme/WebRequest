@@ -103,20 +103,27 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
         let group = DispatchGroup()
         var taskData: Data?
         var taskResponse: HTTPURLResponse?
+        var errorCode: ErrorCode?
 
         group.enter()
         queue.async {
             let task = urlSession.dataTask(
                 with: urlRequest,
-                completionHandler: ({ (data, response, _) in
+                completionHandler: ({ (data, response, error) in
                     taskData = data
                     taskResponse = response as? HTTPURLResponse
+                    errorCode = self.parseError(error)
                     group.leave()
                 }))
             task.resume()
         }
 
         let timeoutResult = group.wait(timeout: .now() + timeoutInterval)
+
+        if let errorCode = errorCode {
+            try complete(request: request, errorCode: errorCode)
+            return
+        }
 
         guard (timeoutResult != .timedOut) else {
             try complete(request: request, errorCode: .TimedOut)
@@ -149,5 +156,20 @@ open class HTTPWebRequestDelivery : NSObject, WebRequestDelivery {
     open func onDataReceived(request: WebRequest, status: Int, percentComplete: Int, target: URL ) throws {
         let result = WebRequest.Result(status: status, headers: [:] , data: nil)
         try request.onDataReceived?(result, request, percentComplete, target);
+    }
+    
+    open func parseError(_ error: Error?) -> ErrorCode? {
+        guard let error = error else { return nil }
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .notConnectedToInternet:
+                return .NoInternetConnection
+            case .timedOut:
+                return .TimedOut
+            default:
+                ()
+            }
+        }
+        return .MalformedResponse
     }
 }
