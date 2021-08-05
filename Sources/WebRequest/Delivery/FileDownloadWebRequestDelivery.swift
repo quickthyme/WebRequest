@@ -56,4 +56,13 @@ open class FileDownloadWebRequestDelivery : HTTPWebRequestDelivery, URLSessionDo
         if let error = error { print("\(#function) - \(error)") }
         self.webRequest = nil
     }
+
+    open func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        guard let error = error,
+              let errorCode = self.parseError(error),
+              let request = self.webRequest else { return }
+        print("\(#function) - \(error)")
+        try? complete(request: request, errorCode: errorCode)
+        self.webRequest = nil
+    }
 }
